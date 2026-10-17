@@ -1,0 +1,38 @@
+{
+  "version": "0.1.0-first-playable",
+  "place": "Outlaw_Valley_Hollow_Crown_0_1.rbxlx",
+  "world": {
+    "settlements": 1,
+    "combat_regions": 3,
+    "interactables": 10,
+    "scenic_parts": 2433,
+    "enemy_types": 8,
+    "weapons": 7,
+    "bosses": 1
+  },
+  "instances": 2518,
+  "classes": {
+    "Workspace": 1,
+    "Folder": 7,
+    "Part": 2433,
+    "SurfaceGui": 13,
+    "TextLabel": 13,
+    "PointLight": 20,
+    "ProximityPrompt": 15,
+    "SpawnLocation": 1,
+    "Lighting": 1,
+    "Atmosphere": 1,
+    "BloomEffect": 1,
+    "ColorCorrectionEffect": 1,
+    "SunRaysEffect": 1,
+    "ReplicatedStorage": 1,
+    "ServerScriptService": 1,
+    "StarterPlayer": 1,
+    "StarterPlayerScripts": 1,
+    "ModuleScript": 3,
+    "Script": 1,
+    "LocalScript": 1,
+    "SoundService": 1
+  },
+  "notes": "Original static hand-built world. No Goblin Hunt assets or scripts reused. Creator Store imports still pending manual vetting."
+}
