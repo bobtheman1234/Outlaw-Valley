@@ -1,10 +1,10 @@
-# OUTLAW VALLEY: THE HOLLOW CROWN — v0.2 playable candidate
+# OUTLAW VALLEY: THE HOLLOW CROWN — v0.3 playable candidate
 
 Independent Roblox free-roam PvE-first fantasy adventure. This project shares no code with Goblin Hunt.
 
 ## The place file
 
-`Outlaw_Valley_Hollow_Crown_v02.rbxlx` is an editable Roblox Studio place file. Open from file and publish under your own Roblox account. Player-owned experiences automatically grant Godslayer to the experience's creator. The 100-Robux pass is not live until a pass is created in the Roblox Creator Dashboard and its numeric ID is set in `ReplicatedStorage.OutlawConfig.PassId`.
+`Outlaw_Valley_Hollow_Crown_v03.rbxlx` is an editable Roblox Studio place file. Open from file and publish under your own Roblox account. Player-owned experiences automatically grant Godslayer to the experience's creator. The 100-Robux pass is not live until a pass is created in the Roblox Creator Dashboard and its numeric ID is set in `ReplicatedStorage.OutlawConfig.PassId`.
 
 ## Core mechanics built
 
@@ -19,7 +19,7 @@ Independent Roblox free-roam PvE-first fantasy adventure. This project shares no
 - Expiring supply caches, bank, merchant shop, ammo refill, healing, day-night cycle and periodic world events.
 - Multiplayer support with wilderness PvP. A PvP kill can transfer 25% of the victim's carried gold, while banked money and owned weapons remain safe.
 - Godslayer: huge damage, penetrating visual, area damage and direct one-hit kills against players outside the safe town. Purchases verify ownership server-side. A live 100-Robux pass requires its creator dashboard ID.
-- Q dodging with an enforced cooldown; finite ammo, reloading, weapon-specific firing and explosion particles.
+- Q dodging with an enforced cooldown; finite ammo, reloading, weapon-specific firing, arcing bouncing Boomstick grenades, impact effects and explosion particles.
 
 ## Commands
 
