@@ -3,6 +3,7 @@
 local C = {}
 C.Version = '0.1.0-first-playable'
 C.PassId = 0 -- The creator must insert their Game Pass ID after publishing.
+C.UseRiggedEnemies = true -- Try Roblox's animated R15 rigs; use static stylized fallback when unavailable.
 C.OwnerUserIds = {} -- Optional explicit owner IDs for group-owned experiences.
 C.StartCoins = 125
 C.StartWeapon = 'Rustfang'
