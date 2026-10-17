@@ -50,7 +50,7 @@ eq('ammo refill counted',Rules.refillCost({Crossbow=true,Rustfang=true,Godslayer
 eq('ammo full',Rules.refillCost({Crossbow=true},w,{Crossbow=48}),0)
 '''
 check('executed Lua rules: 15 assertions',runlua('local Rules=(function()\n'+rules+'\nend)()\n'+tests,'behavior-tests'))
-place=BASE/'Outlaw_Valley_Hollow_Crown_0_1.rbxlx'
+place=BASE/'Outlaw_Valley_Hollow_Crown_v02.rbxlx'
 tree=E.parse(str(place));r=tree.getroot()
 check('place xml root',r.tag=='roblox' and r.get('version')=='4')
 for name in ('OutlawConfig','OutlawRules','OutlawRigFactory','OutlawClient','OutlawServer'):
@@ -65,7 +65,7 @@ for name in ('OV_SHOP','OV_BANK','OV_NURSERY','OV_GODSLAYER'):
  check('prompt exists: '+name,len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]=$v]',v=name))==1)
 check('beacons',len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]="OV_BEACON"]'))==3)
 check('supply caches',len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]="OV_SUPPLY"]'))==4)
-check('distinct props',len(r.xpath('//Item[@class="Part"]'))>=1800)
+check('distinct props',len(r.xpath('//Item[@class="Part"]'))>=2700)
 report={'summary':{'passed':sum(x['pass'] for x in checks),'failed':sum(not x['pass'] for x in checks),
  'roblox_studio_runtime':'NOT EXECUTED','creator_store_meshes_imported':0},'checks':checks}
 (BASE/'TEST_REPORT.json').write_text(json.dumps(report,indent=2))
