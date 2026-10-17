@@ -309,9 +309,12 @@ Effects.OnClientEvent:Connect(function(kind,a,b,c)
  elseif kind=='FIRE' then
   local uid,id,from=a,b,c
   -- Visual tracers are server replicated, so only camera impulse is client-side.
-  if uid==p.UserId and workspace.CurrentCamera and id=='Godslayer' then
+  if uid==p.UserId and workspace.CurrentCamera then
    local camera=workspace.CurrentCamera
-   camera.CFrame=camera.CFrame*CFrame.Angles(math.rad(-1.5),0,0)
+   local recoil=id=='Godslayer' and 2.8 or id=='Boomstick' and 2.1 or
+      id=='Blunderbuss' and 1.9 or id=='Witchfire' and .7 or
+      id=='Rattler' and .3 or .55
+   camera.CFrame=camera.CFrame*CFrame.Angles(math.rad(-recoil),math.rad((math.random()-.5)*recoil*.22),0)
   end
  end
 end)
