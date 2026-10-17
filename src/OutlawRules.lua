@@ -1,4 +1,4 @@
--- Pure Lua gameplay rules; also executed by offline regression tests.
+-- Pure Lua game rules; suitable for both Roblox and standalone deterministic tests.
 local Rules={}
 function Rules.purchase(id,gold,owned,weapons)
  local weapon=weapons[id]
