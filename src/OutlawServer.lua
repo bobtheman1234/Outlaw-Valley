@@ -88,6 +88,9 @@ local function load(p)
   end
  elseif not ok then warn('[Outlaw Valley] LOAD FAILED',p.UserId,data)end
  d.owned.Rustfang=true
+ if d.quests.Relic_1 and d.quests.Relic_2 and d.quests.Relic_3 then
+  d.owned.Soulrender=true -- reconstruct hard-earned secret even if inventory save lagged
+ end
  d.persistenceOK=ok
  d.godslayer=ownsPass(p)
  d.owned.Godslayer=d.godslayer and true or nil -- do NOT restore Studio free-tests as permanent entitlements
@@ -667,6 +670,55 @@ local function explodeBarrel(barrel,killer)
  end
  return true
 end
+-- Boomstick grenades are actual arcing, visible, bouncing world projectiles.
+-- The server simulates travel and splash; clients cannot send fake impact positions.
+local function launchGrenade(shooter,origin,direction,weapon)
+ local grenade=Instance.new('Part');grenade.Name='BOOMSTICK  |  LIVE GRENADE'
+ grenade.Shape=Enum.PartType.Ball;grenade.Size=Vector3.new(1.25,1.25,1.25)
+ grenade.Material=Enum.Material.Metal;grenade.Color=Color3.fromRGB(233,122,57)
+ grenade.Anchored=true;grenade.CanCollide=false;grenade.CanTouch=false;grenade.CanQuery=false
+ grenade.Position=origin;grenade.Parent=effectsFolder
+ local glow=Instance.new('PointLight');glow.Color=Color3.fromRGB(255,154,65)
+ glow.Brightness=2;glow.Range=12;glow.Parent=grenade
+ local sparks=Instance.new('ParticleEmitter');sparks.Name='Fuse Sparks'
+ sparks.Texture='rbxasset://textures/particles/sparkles_main.dds'
+ sparks.Color=ColorSequence.new(Color3.fromRGB(255,183,85))
+ sparks.LightEmission=1;sparks.Rate=22;sparks.Lifetime=NumberRange.new(.12,.25)
+ sparks.Speed=NumberRange.new(.4,1.3);sparks.Size=NumberSequence.new(.25);sparks.Parent=grenade
+ local pos=origin;local velocity=direction.Unit*115+Vector3.new(0,37,0)
+ local start=clock();local bounces=0;local fuse=2.9
+ local function explode()
+  if not grenade.Parent then return end
+  local center=grenade.Position
+  grenade:Destroy()
+  hostileArea(center,weapon.blast,weapon.damage,shooter)
+  Effects:FireAllClients('EXPLOSION',center,weapon.blast)
+  sound(effectsFolder,'rbxasset://sounds/impact_generic.mp3',1,.55)
+ end
+ task.spawn(function()
+  while grenade.Parent and clock()-start<fuse do
+   local dt=math.min(Run.Heartbeat:Wait(),.065)
+   local step=velocity*dt+Vector3.new(0,-.5*workspace.Gravity*dt*dt,0)
+   local ray=RaycastParams.new();ray.FilterType=Enum.RaycastFilterType.Exclude
+   ray.FilterDescendantsInstances={shooter.Character,effectsFolder};ray.IgnoreWater=true
+   local hit=world:Raycast(pos,step,ray)
+   if hit then
+    pos=hit.Position+hit.Normal*.6
+    if getEnemyFromPart(hit.Instance) or bounces>=1 then
+     grenade.Position=pos;explode();return
+    end
+    local n=hit.Normal
+    velocity=(velocity-n*2*velocity:Dot(n))*.55+n*7
+    bounces=bounces+1
+   else
+    pos=pos+step;velocity=velocity+Vector3.new(0,-workspace.Gravity*dt,0)
+   end
+   grenade.Position=pos
+  end
+  explode()
+ end)
+ Debris:AddItem(grenade,5)
+end
 local function fireWeapon(p,id,targetPoint)
  local d=profiles[p];if not d then return end
  local h=alivePlayer(p);if not h then return end
@@ -688,6 +740,12 @@ local function fireWeapon(p,id,targetPoint)
  local dir=delta.Unit
  local aimDist=math.min(weapon.range,delta.Magnitude)
  local barrel=origin+dir*2
+ if id=='Boomstick' then
+  launchGrenade(p,barrel,dir,weapon)
+  Effects:FireAllClients('FIRE',p.UserId,id,barrel,weapon.color)
+  State:FireClient(p,{ammoOnly=id,loaded=d.heldAmmo[id],reserve=d.ammo[id]})
+  return
+ end
  if weapon.category=='melee' then
   local best,dist=nil,weapon.range
   for _,e in pairs(activeEnemies) do
@@ -730,6 +788,7 @@ local function fireWeapon(p,id,targetPoint)
     else burst(impact,weapon.color,2.8,.17)end
    elseif weapon.blast>0 then hostileArea(impact,weapon.blast,weapon.damage,p)end
   end
+  burst(barrel,weapon.color,id=='Godslayer' and 6.0 or 1.8,.11)
   Effects:FireAllClients('FIRE',p.UserId,id,barrel,weapon.color)
  end
  State:FireClient(p,{ammoOnly=id,loaded=d.heldAmmo[id],reserve=d.ammo[id]})
