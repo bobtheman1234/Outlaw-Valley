@@ -50,10 +50,10 @@ eq('ammo refill counted',Rules.refillCost({Crossbow=true,Rustfang=true,Godslayer
 eq('ammo full',Rules.refillCost({Crossbow=true},w,{Crossbow=48}),0)
 '''
 check('executed Lua rules: 15 assertions',runlua('local Rules=(function()\n'+rules+'\nend)()\n'+tests,'behavior-tests'))
-place=BASE/'Outlaw_Valley_Hollow_Crown_v02.rbxlx'
+place=BASE/'Outlaw_Valley_Hollow_Crown_v04_ArtUpgrade.rbxlx'
 tree=E.parse(str(place));r=tree.getroot()
 check('place xml root',r.tag=='roblox' and r.get('version')=='4')
-for name in ('OutlawConfig','OutlawRules','OutlawRigFactory','OutlawClient','OutlawServer'):
+for name in ('OutlawConfig','OutlawRules','OutlawRigFactory','OutlawClient','OutlawServer','OutlawAssetCatalog','OutlawAssetInstaller','OutlawAssetRuntime'):
  nodes=r.xpath('//Item[Properties/string[@name="Name"]=$v]',v=name)
  check('script embedded: '+name,len(nodes)==1 and nodes[0].find('Properties/ProtectedString[@name="Source"]') is not None)
  if len(nodes)==1:
@@ -65,9 +65,12 @@ for name in ('OV_SHOP','OV_BANK','OV_NURSERY','OV_GODSLAYER'):
  check('prompt exists: '+name,len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]=$v]',v=name))==1)
 check('beacons',len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]="OV_BEACON"]'))==3)
 check('supply caches',len(r.xpath('//Item[@class="ProximityPrompt"][Properties/string[@name="Name"]="OV_SUPPLY"]'))==4)
-check('distinct props',len(r.xpath('//Item[@class="Part"]'))>=2700)
+check('distinct props',len(r.xpath('//Item[@class="Part"]'))>=3200)
+check('Creator Store model references',len(__import__('re').findall(r'assetId=\d+', (BASE/'src/OutlawAssetCatalog.lua').read_text()))==11)
+check('automatic asset loader wired',len(r.xpath('//Item[@class="Script"][Properties/string[@name="Name"]="OutlawAssetRuntime"]'))==1)
+check('imported model scripts stripped',"child:IsA('LuaSourceContainer')" in (BASE/'src/OutlawAssetInstaller.lua').read_text())
 report={'summary':{'passed':sum(x['pass'] for x in checks),'failed':sum(not x['pass'] for x in checks),
- 'roblox_studio_runtime':'NOT EXECUTED','creator_store_meshes_imported':0},'checks':checks}
+ 'roblox_studio_runtime':'NOT EXECUTED','creator_store_meshes_embedded_offline':0,'creator_store_models_curated_for_in_game_loading':11},'checks':checks}
 (BASE/'TEST_REPORT.json').write_text(json.dumps(report,indent=2))
 print(json.dumps(report['summary'],indent=2))
 sys.exit(0 if report['summary']['failed']==0 else 1)
