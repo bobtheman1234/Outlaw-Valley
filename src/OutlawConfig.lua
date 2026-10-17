@@ -1,7 +1,7 @@
 -- OUTLAW VALLEY: THE HOLLOW CROWN
 -- Shared, data-driven balancing. Every value here is editable.
 local C = {}
-C.Version = '0.3.0-grenade-relic-defense'
+C.Version = '0.4.0-creator-store-art-pass'
 C.PassId = 0 -- The creator must insert their Game Pass ID after publishing.
 C.UseRiggedEnemies = true -- Try Roblox's animated R15 rigs; use static stylized fallback when unavailable.
 C.OwnerUserIds = {} -- Optional explicit owner IDs for group-owned experiences.
