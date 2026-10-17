@@ -153,7 +153,7 @@ end
 local playerDot=create('TextLabel',{AnchorPoint=Vector2.new(.5,.5),Position=mapCoordinate(-160,-145),Size=UDim2.fromOffset(20,20),
  BackgroundColor3=colors.white,Text='▲',TextColor3=Color3.fromRGB(27,42,58),Font=Enum.Font.GothamBlack,TextSize=18},mapSurface);rounded(playerDot,10)
 label(create('Frame',{Position=UDim2.fromOffset(30,538),Size=UDim2.fromOffset(530,24),BackgroundTransparency=1},mapPanel),
- 'WHITE ARROW: YOU   •   RED: DANGER   •   M: TOGGLE MAP',12,Enum.Font.GothamMedium,colors.white)
+ 'WHITE ARROW: YOU   •   RED: DANGER   •   M: MAP   •   Q: DODGE',12,Enum.Font.GothamMedium,colors.white)
 local showThread=0
 local function notify(text,kind)
  showThread=showThread+1;local key=showThread
@@ -183,7 +183,9 @@ State.OnClientEvent:Connect(function(d)
   if left>0 then hatch='EGG HATCHES IN '..math.ceil(left/60)..' MIN' end
  end
  local q=profile.quests or {}
- quest.Text='THE HOLLOW CROWN\n• Beacons repaired: '..(q.beacons or 0)..'/3\n• Warden defeated: '..(profile.warden or 0)..'\n• '..hatch..'   |  Foxes: '..(profile.hatched or 0)
+ local fragments=0
+ for i=1,3 do if q['Relic_'..i] then fragments=fragments+1 end end
+ quest.Text='THE HOLLOW CROWN\n• Signal trials: '..(q.beacons or 0)..'/3\n• Lost relics: '..fragments..'/3  (secret weapon)\n• Warden defeated: '..(profile.warden or 0)..'\n• '..hatch..'   |  Foxes: '..(profile.hatched or 0)
  refillShop();currentAmmo()
 end)
 local function connectTool(t)
@@ -246,12 +248,22 @@ end
 watchInventory()
 UIS.InputBegan:Connect(function(inp,processed)
  if processed then return end
- if inp.KeyCode==Enum.KeyCode.R then Action:FireServer('Reload',selected)
+ if inp.KeyCode==Enum.KeyCode.Q then
+  if os.clock()-dodgeLast>=3 then
+   dodgeLast=os.clock();Action:FireServer('Dodge')
+   dodgeInfo.Text='DODGE RECHARGING...';dodgeInfo.TextColor3=Color3.fromRGB(241,186,109)
+   task.delay(3,function() if dodgeInfo then dodgeInfo.Text='Q  ·  DODGE / EVADE';dodgeInfo.TextColor3=Color3.fromRGB(192,240,210)end end)
+  end
+ elseif inp.KeyCode==Enum.KeyCode.R then Action:FireServer('Reload',selected)
  elseif inp.KeyCode==Enum.KeyCode.Escape then shop.Visible=false;bankPanel.Visible=false;mapPanel.Visible=false
  elseif inp.KeyCode==Enum.KeyCode.M then
   shop.Visible=false;bankPanel.Visible=false;mapPanel.Visible=not mapPanel.Visible
  end
 end)
+local dodgeInfo=create('TextLabel',{AnchorPoint=Vector2.new(.5,1),Position=UDim2.new(.5,0,1,-95),
+ Size=UDim2.fromOffset(245,28),BackgroundTransparency=.32,BackgroundColor3=Color3.fromRGB(28,40,38),
+ Text='Q  ·  DODGE / EVADE',TextColor3=Color3.fromRGB(192,240,210),Font=Enum.Font.GothamBold,TextSize=13},gui)
+local dodgeLast=0
 local region=''
 Run.RenderStepped:Connect(function()
  local ch=p.Character;local root=ch and ch:FindFirstChild('HumanoidRootPart')
@@ -275,6 +287,25 @@ Effects.OnClientEvent:Connect(function(kind,a,b,c)
     TextColor3=b and colors.gold or colors.white,TextSize=24,Font=Enum.Font.GothamBlack},gui)
   Tween:Create(mark,TweenInfo.new(.5),{Position=UDim2.fromScale(.5,.36),TextTransparency=1}):Play()
   task.delay(.55,function()mark:Destroy()end)
+ elseif kind=='EXPLOSION' then
+  local ch=p.Character
+  local root=ch and ch:FindFirstChild('HumanoidRootPart')
+  local point=a
+  if root and typeof(point)=='Vector3' then
+   local dist=(root.Position-point).Magnitude
+   if dist<95 then
+    local camera=workspace.CurrentCamera
+    if camera then
+     local strength=math.clamp((95-dist)/95,0,1)
+     camera.CFrame=camera.CFrame*CFrame.Angles(math.rad(-1.9)*strength,math.rad(.9)*strength,0)
+    end
+   end
+  end
+ elseif kind=='DODGE' then
+  if a==p.UserId then
+   local camera=workspace.CurrentCamera
+   if camera then camera.CFrame=camera.CFrame*CFrame.Angles(math.rad(.7),0,math.rad(1.5))end
+  end
  elseif kind=='FIRE' then
   local uid,id,from=a,b,c
   -- Visual tracers are server replicated, so only camera impulse is client-side.
