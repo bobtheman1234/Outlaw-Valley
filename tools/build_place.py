@@ -527,9 +527,9 @@ addp(sp.find('Properties'),'float','CharacterJumpPower',48)
 # Camera sound ambient via SoundService not externally sourced, intentionally no unverified audio.
 service=item('SoundService',root,'SoundService')
 # Build, log, package
-out=BASE/'Outlaw_Valley_Hollow_Crown_v02.rbxlx'
+out=BASE/'Outlaw_Valley_Hollow_Crown_v03.rbxlx'
 E.ElementTree(root).write(str(out),encoding='utf-8',xml_declaration=True,pretty_print=True)
-manifest={"version":"0.2.0-signal-defenses","place":out.name,"world":{
+manifest={"version":"0.3.0-grenade-relic-defense","place":out.name,"world":{
  "settlements":1,"combat_regions":3,"interactables":27,"scenic_parts":counts.get('Part',0),
  "enemy_types":8,"weapons":8,"bosses":1},"instances":serial,"classes":counts,
  "notes":"Original assembled world and script-driven character rigs. No Goblin Hunt code used. Creator Store assets not yet embedded or visually verified; real Studio testing pending."}
