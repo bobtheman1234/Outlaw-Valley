@@ -29,6 +29,7 @@ local Effects=remote('Effects')
 local State=remote('State')
 local store = DSS:GetDataStore('OutlawValley_HollowCrown_v1')
 local profiles,activeEnemies,dropped={}, {}, {}
+local dodgeState={}
 local random=Random.new()
 local enemySerial=0
 local nextBossSpawn=0
@@ -70,7 +71,9 @@ end
 local function save(p)
  local d=profiles[p];if not d then return end
  if not d.persistenceOK then return end
- local copy={coins=d.coins,bank=d.bank,owned=d.owned,eggs=d.eggs,hatched=d.hatched,
+ local savedOwned=table.clone(d.owned)
+ savedOwned.Godslayer=nil -- paid passes are checked with MarketplaceService each session
+ local copy={coins=d.coins,bank=d.bank,owned=savedOwned,eggs=d.eggs,hatched=d.hatched,
   relics=d.relics,kills=d.kills,warden=d.warden,quests=d.quests,ammo=d.ammo}
  local ok,err=pcall(function()store:SetAsync('u_'..p.UserId,copy)end)
  if not ok then warn('[Outlaw Valley] SAVE FAILED',p.UserId,err)end
@@ -87,7 +90,7 @@ local function load(p)
  d.owned.Rustfang=true
  d.persistenceOK=ok
  d.godslayer=ownsPass(p)
- if d.godslayer then d.owned.Godslayer=true end
+ d.owned.Godslayer=d.godslayer and true or nil -- do NOT restore Studio free-tests as permanent entitlements
  d.fireTimes={}; d.reloadTimes={}; d.heldAmmo={}
  for id,weapon in pairs(C.Weapons) do
   if type(d.ammo[id])~='number' or d.ammo[id]<0 then d.ammo[id]=weapon.reserve end
@@ -142,6 +145,10 @@ local function giveTool(p,id)
   if id=='Rustfang' then
    piece('Crossguard',Vector3.new(1.7,.14,.19),Vector3.new(0,.78,0),Color3.fromRGB(194,150,69))
    piece('Steel Blade',Vector3.new(.26,3.2,.13),Vector3.new(0,2.35,0),Color3.fromRGB(194,208,214))
+  elseif id=='Soulrender' then
+   piece('Soulrender Darksteel Guard',Vector3.new(1.9,.24,.4),Vector3.new(0,.86,0),Color3.fromRGB(52,33,67))
+   piece('Soulrender Runic Blade',Vector3.new(.34,4.1,.19),Vector3.new(0,2.95,0),Color3.fromRGB(186,105,255))
+   piece('Soulrender Moonstone',Vector3.new(.8,.85,.8),Vector3.new(0,4.9,0),Color3.fromRGB(225,173,255),Enum.PartType.Ball)
   elseif id=='Witchfire' then
    piece('Staff',Vector3.new(.26,4.5,.26),Vector3.new(0,2,0),Color3.fromRGB(86,54,102))
    piece('Spell Core',Vector3.new(.95,.95,.95),Vector3.new(0,4.5,0),weapon.color,Enum.PartType.Ball)
@@ -224,6 +231,8 @@ local function nearestPlayer(origin,radius)
 end
 local function damagePlayer(attacker,victim,damage)
  local h=alivePlayer(victim);if not h then return false end
+ local dodge=dodgeState[victim]
+ if dodge and clock()<dodge.invulnerableUntil then return false end
  if attacker and attacker:IsA('Player') then
   if attacker==victim or inTown(posOf(attacker)) or inTown(posOf(victim)) then return false end
   victim:SetAttribute('LastPvPAttacker',attacker.UserId)
@@ -275,6 +284,22 @@ local function enemyDeath(enemy,killer)
   end
   notice(killer,'+'..enemy.conf.coins..' GOLD  |  '..enemy.conf.display,'GOLD');sync(killer)
  end
+ -- Meaningful co-op credit: helping fight a boss should not be worthless because
+ -- your friend happened to land the final shot.
+ for userId,total in pairs(enemy.contributors or {}) do
+  local teammate=Players:GetPlayerByUserId(userId)
+  if teammate and teammate~=killer and profiles[teammate] and total>=enemy.maxHP*.12 then
+   local data=profiles[teammate]
+   local assistCoins=math.floor(enemy.conf.coins*.48)
+   data.coins=data.coins+assistCoins
+   data.kills=data.kills+1
+   if enemy.kind=='Boss' then
+    data.warden=data.warden+1;data.relics=data.relics+1
+    notice(teammate,'BOSS ASSIST: +1 CROWN SHARD AND '..assistCoins..' GOLD','SUCCESS')
+   else notice(teammate,'COMBAT ASSIST! +'..assistCoins..' GOLD','GOLD')end
+   sync(teammate)
+  end
+ end
  if enemy.kind=='Boss' then
   coinDrop(enemy.pos,300,'WARDEN VAULT')
   eggDrop(enemy.pos+Vector3.new(4,0,0))
@@ -303,6 +328,10 @@ local function hurtEnemy(enemy,damage,killer,critical)
   end
  end
  enemy.staggerUntil=clock()+.16
+ if killer and killer:IsA('Player') then
+  local credited=math.min(enemy.hp,math.max(0,damage))
+  enemy.contributors[killer.UserId]=(enemy.contributors[killer.UserId] or 0)+credited
+ end
  enemy.hp=math.max(0,enemy.hp-damage)
  if enemy.healthBar then enemy.healthBar.Size=UDim2.fromScale(enemy.hp/enemy.maxHP,1) end
  if enemy.hp<=0 then enemyDeath(enemy,killer) else
@@ -443,7 +472,7 @@ local function spawnEnemy(kind,position,homeTag)
  local model,scale,hpbar,offset=makeEnemyVisual(kind,conf,position)
  local enemy={kind=kind,conf=conf,model=model,scale=scale,alive=true,hp=conf.health,maxHP=conf.health,
   pos=position,home=position,tag=homeTag,healthBar=hpbar,rigOffset=offset,nextAttack=clock()+2.0,
-  phase=1,strafe=random:NextNumber()<.5 and -1 or 1,flashUntil=0,walk=0}
+  phase=1,strafe=random:NextNumber()<.5 and -1 or 1,flashUntil=0,walk=0,contributors={}}
  activeEnemies[model]=enemy
  return enemy
 end
@@ -453,7 +482,42 @@ local function npcAttack(e, target, distance)
  local attack=e.conf.attack
  local start=e.pos;local aim=posOf(target)
  if not aim then return end
- if attack=='slash' or attack=='lunge' then
+ if attack=='boss' and e.phase>=2 and random:NextInteger(1,3)==1 then
+  -- The Crownless Warden's howl pushes defenders away from the inner arena.
+  eventMessage('THE WARDEN: KNEEL BEFORE THE EMPTY THRONE!')
+  warningCircle(e.pos,25,1.2,Color3.fromRGB(210,75,252))
+  local point=e.pos
+  task.delay(1.2,function()
+   if not e.alive then return end
+   burst(point+Vector3.new(0,2,0),Color3.fromRGB(225,80,248),45,.65)
+   for _,victim in ipairs(Players:GetPlayers()) do
+    local pp=posOf(victim)
+    if pp and (pp-point).Magnitude<24 then
+     if damagePlayer(nil,victim,math.floor(e.conf.damage*.85)) then
+      local root=victim.Character and victim.Character:FindFirstChild('HumanoidRootPart')
+      if root then
+       local delta=(pp-point)*Vector3.new(1,0,1)
+       if delta.Magnitude>.2 then root.AssemblyLinearVelocity=delta.Unit*55+Vector3.new(0,28,0)end
+      end
+     end
+    end
+   end
+  end)
+ elseif attack=='boss' and e.phase==3 and random:NextInteger(1,2)==1 then
+  -- Last stand: three separate warning zones players must navigate.
+  eventMessage('WARDEN: THE CROWN WILL HAVE ITS BLOOD!')
+  for i=1,3 do
+   local angle=i*math.pi*2/3+clock()
+   local point=aim+Vector3.new(math.cos(angle)*9,0,math.sin(angle)*9)
+   warningCircle(point,8,e.conf.windup+.25*i,Color3.fromRGB(252,94,119))
+   task.delay(e.conf.windup+.25*i,function()
+    if e.alive then
+     burst(point+Vector3.new(0,2,0),Color3.fromRGB(255,113,117),15,.43)
+     damageInZone(point,8,math.floor(e.conf.damage*.55))
+    end
+   end)
+  end
+ elseif attack=='slash' or attack=='lunge' then
   sound(e.model,'rbxassetid://12222200',.25,random:NextNumber(.75,1.2))
   warningCircle(aim,5,.48,Color3.fromRGB(255,92,73))
   task.delay(e.conf.windup,function()
@@ -533,8 +597,37 @@ local function moveAI(e,dt)
    local dir=e.home-e.pos;wanted=e.pos+dir.Unit*math.min(e.conf.speed*.45*dt,dir.Magnitude)
   end
  end
+ -- Wizards blink when cornered, giving ranged fights a positional challenge.
+ if e.kind=='Wizard' and target and dist<27 and clock()>(e.nextBlink or 0) then
+  e.nextBlink=clock()+13
+  local away=Vector3.new(e.pos.X-posOf(target).X,0,e.pos.Z-posOf(target).Z)
+  if away.Magnitude>1 then
+   local sideways=Vector3.new(-away.Z,0,away.X).Unit*e.strafe
+   local destination=e.pos+away.Unit*10+sideways*12
+   burst(e.pos+Vector3.new(0,3,0),e.conf.color,7,.22)
+   e.pos=Vector3.new(destination.X,e.home.Y,destination.Z)
+   burst(e.pos+Vector3.new(0,3,0),e.conf.color,7,.22)
+   wanted=e.pos
+  end
+ end
  if immobilized then wanted=e.pos end
  if (wanted-e.pos).Magnitude>.005 then
+  -- Local obstacle feeler: tries a flank instead of clipping directly through walls.
+  -- Thin foliage and other enemies are ignored; this is NOT full PathfindingService.
+  local travel=Vector3.new(wanted.X-e.pos.X,0,wanted.Z-e.pos.Z)
+  if travel.Magnitude>.02 then
+   local collision=RaycastParams.new()
+   collision.FilterType=Enum.RaycastFilterType.Exclude
+   collision.FilterDescendantsInstances={enemiesFolder,effectsFolder}
+   local direction=travel.Unit
+   local blocked=workspace:Raycast(e.pos+Vector3.new(0,2.5,0),direction*math.min(6,travel.Magnitude+3),collision)
+   if blocked and blocked.Instance.CanCollide and math.abs(blocked.Normal.Y)<.6 then
+    local sideways=Vector3.new(-direction.Z,0,direction.X)*e.strafe
+    local left=workspace:Raycast(e.pos+Vector3.new(0,2.5,0),sideways*5,collision)
+    if left and left.Instance.CanCollide then sideways=-sideways end
+    wanted=e.pos+sideways*math.min(travel.Magnitude,dt*e.conf.speed)
+   end
+  end
   e.pos=Vector3.new(wanted.X,e.home.Y,wanted.Z)
   e.walk=e.walk+dt*(e.conf.speed/3)
   local facing=target and posOf(target) or e.home+Vector3.new(0,0,-2)
@@ -557,10 +650,28 @@ local function moveAI(e,dt)
  local head=e.model:FindFirstChild('HeadHit') or e.model:FindFirstChild('Head')
  if head then head.Color=clock()<e.flashUntil and Color3.new(1,1,1) or e.conf.color end
 end
+-- The camp's red-banded powder barrels are world objects, not decorations.
+-- Players can deliberately detonate them to clear enemies or hurt themselves.
+local function explodeBarrel(barrel,killer)
+ if not barrel or barrel.Name~='Supply barrel' or barrel:GetAttribute('PowderSpent') then return false end
+ barrel:SetAttribute('PowderSpent',true)
+ local pos=barrel.Position
+ barrel:Destroy()
+ burst(pos,Color3.fromRGB(255,124,36),26,.46)
+ for _,e in pairs(activeEnemies) do
+  if e.alive and (e.pos-pos).Magnitude<=17 then hurtEnemy(e,105,killer,false) end
+ end
+ for _,other in ipairs(Players:GetPlayers()) do
+  local where=posOf(other)
+  if where and (where-pos).Magnitude<=14 then damagePlayer(nil,other,38)end
+ end
+ return true
+end
 local function fireWeapon(p,id,targetPoint)
  local d=profiles[p];if not d then return end
  local h=alivePlayer(p);if not h then return end
  if type(id)~='string' or typeof(targetPoint)~='Vector3' then return end
+ if targetPoint.X~=targetPoint.X or targetPoint.Y~=targetPoint.Y or targetPoint.Z~=targetPoint.Z then return end
  local weapon=C.Weapons[id];if not weapon or not d.owned[id] then return end
  local equipped=p.Character and p.Character:FindFirstChildOfClass('Tool')
  if not equipped or equipped:GetAttribute('WeaponId')~=id then return end
@@ -604,6 +715,9 @@ local function fireWeapon(p,id,targetPoint)
    local impact=hit and hit.Position or (origin+shotDir*weapon.range)
    tracer(barrel,impact,weapon.color,id=='Godslayer' and 3.4 or .18,id=='Godslayer' and .56 or .12)
    if hit then
+    if explodeBarrel(hit.Instance,p) then
+     Effects:FireAllClients('EXPLOSION',impact,18)
+    end
     local enemy=getEnemyFromPart(hit.Instance)
     if enemy then
      local head=hit.Instance.Name=='HeadHit' or hit.Instance.Name=='Head'
@@ -744,22 +858,169 @@ local function hatch(p)
  notice(p,'A HOLLOW FOX HATCHED! +1 COMPANION','SUCCESS')
  p:SetAttribute('HollowFoxes',d.hatched);summonPet(p);sync(p)
 end
+-- Signal trials are real timed defense encounters, not instant-click rewards.
+local beaconTrials={}
+local function finishTrial(beacon,won)
+ local trial=beaconTrials[beacon];if not trial then return end
+ beaconTrials[beacon]=nil
+ for p in pairs(trial.participants) do
+  local d=profiles[p]
+  if d then
+   d.beaconTrial=nil
+   if won and not d.quests[trial.key] then
+    d.quests[trial.key]=true
+    d.coins=d.coins+210
+    local count=0
+    for key,done in pairs(d.quests) do if string.find(key,'Beacon_')==1 and done then count=count+1 end end
+    d.quests.beacons=count
+    notice(p,'SIGNAL SURVIVED! +210 GOLD  |  '..count..'/3 BEACONS RESTORED','SUCCESS')
+    if count==3 then d.relics=d.relics+1;notice(p,'THE THREE FIRES ARE LIT. THE CROWN SHARD IS YOURS.','SUCCESS') end
+   elseif not won then
+    notice(p,'THE SIGNAL WENT DARK. RETURN WHEN YOU ARE READY.','WARN')
+   end
+   sync(p)
+  end
+ end
+ local flame=beacon:FindFirstChild('Restored Fire')
+ if flame then flame:Destroy() end
+ if won then
+  local glow=Instance.new('Part');glow.Name='Signal ignited';glow.Shape=Enum.PartType.Ball
+  glow.Color=Color3.fromRGB(252,180,75);glow.Material=Enum.Material.Neon
+  glow.Anchored=true;glow.CanCollide=false;glow.CanQuery=false;glow.CanTouch=false
+  glow.Size=Vector3.new(3,3,3);glow.Position=beacon.Position+Vector3.new(0,5,0)
+  glow.Parent=effectsFolder;Debris:AddItem(glow,22)
+  burst(glow.Position,Color3.fromRGB(255,212,97),18,.65)
+ end
+end
+local function trialEnemiesRemain(tag)
+ local n=0
+ for _,enemy in pairs(activeEnemies) do if enemy.alive and enemy.tag==tag then n=n+1 end end
+ return n
+end
 local function activateBeacon(p,beacon)
  local d=profiles[p];if not d or not beacon then return end
  local key='Beacon_'..beacon.Name
- if d.quests[key] then notice(p,'THIS SIGNAL HAS ALREADY BEEN REPAIRED','WARN');return end
- if d.coins<50 then notice(p,'REPAIR COSTS 50 GOLD','WARN');return end
- d.coins=d.coins-50;d.quests[key]=true
- local count=0;for k,v in pairs(d.quests) do if string.find(k,'Beacon_')==1 and v then count=count+1 end end
- d.quests.beacons=count
- d.coins=d.coins+80
- notice(p,'BEACON RESTORED! +80 GOLD  ['..count..'/3]','QUEST')
- if count==3 then d.relics=d.relics+1;notice(p,'ALL SIGNALS LIT! YOU FOUND A CROWN SHARD.','SUCCESS')end
+ if d.quests[key] then notice(p,'YOU HAVE ALREADY SAVED THIS SIGNAL','QUEST');return end
+ if d.beaconTrial then notice(p,'FINISH YOUR CURRENT DEFENSE FIRST','WARN');return end
+ local previous=beaconTrials[beacon]
+ if previous then
+  previous.participants[p]=true
+  d.beaconTrial=key
+  notice(p,'YOU HAVE JOINED THE SIGNAL DEFENSE. HOLD THIS GROUND!','WORLD')
+  return
+ end
+ local position=beacon.Position+Vector3.new(0,0,0)
+ local trial={participants={[p]=true},key=key,start=clock(),tag='beacon_'..beacon.Name}
+ beaconTrials[beacon]=trial;d.beaconTrial=key
+ notice(p,'THE BEACON HAS WOKEN SOMETHING. DO NOT LEAVE IT UNDEFENDED!','WORLD')
+ eventMessage(p.DisplayName..' LIT AN ANCIENT SIGNAL. THE VALLEY IS ANSWERING...')
+ local fire=Instance.new('Part');fire.Name='Restored Fire';fire.Shape=Enum.PartType.Ball
+ fire.Size=Vector3.new(3,3,3);fire.Anchored=true;fire.CanCollide=false;fire.CanQuery=false
+ fire.CanTouch=false;fire.Color=Color3.fromRGB(255,156,48);fire.Material=Enum.Material.Neon
+ fire.Position=position+Vector3.new(0,5,0);fire.Parent=beacon
+ local shine=Instance.new('PointLight');shine.Color=fire.Color;shine.Brightness=3;shine.Range=35;shine.Parent=fire
+ task.spawn(function()
+  -- Three escalations, each must be defeated. Time is used for tension, not idle waiting.
+  local types=beacon.Name=='SignalBeacon3' and {'Knight','Knight','Brute'} or
+   beacon.Name=='SignalBeacon1' and {'Goblin','Bandit','Archer'} or {'Goblin','Archer','Wizard'}
+  local elapsed=0
+  for wave=1,3 do
+   if beaconTrials[beacon]~=trial then return end
+   local waveCount=wave==1 and 3 or wave==2 and 4 or 5
+   for i=1,waveCount do
+    local angle=(i/waveCount)*math.pi*2+wave
+    local distance=29+(i%2)*12
+    local spawn=position+Vector3.new(math.cos(angle)*distance,0,math.sin(angle)*distance)
+    local e=spawnEnemy(types[wave],Vector3.new(spawn.X,beacon.Name=='SignalBeacon3' and 7.65 or 2.75,spawn.Z),trial.tag)
+    if e then e.home=e.pos end
+   end
+   for member in pairs(trial.participants) do if profiles[member] then notice(member,'SIGNAL WAVE '..wave..'/3  —  '..waveCount..' ENEMIES INCOMING','WORLD')end end
+   local deadline=clock()+75
+   while trialEnemiesRemain(trial.tag)>0 and clock()<deadline and beaconTrials[beacon]==trial do
+    task.wait(1);elapsed=elapsed+1
+    local defenders=0
+    for member in pairs(trial.participants) do
+     local playerPos=posOf(member)
+     if not profiles[member] or not alivePlayer(member) or not playerPos or (playerPos-position).Magnitude>95 then
+      trial.participants[member]=nil
+      if profiles[member] then profiles[member].beaconTrial=nil;notice(member,'YOU ABANDONED THE SIGNAL','WARN')end
+     else defenders=defenders+1 end
+    end
+    if defenders==0 then finishTrial(beacon,false);return end
+   end
+   if beaconTrials[beacon]~=trial then return end
+   if trialEnemiesRemain(trial.tag)>0 then finishTrial(beacon,false);return end
+   if wave<3 then
+    for _,member in ipairs(Players:GetPlayers()) do if trial.participants[member] then notice(member,'SIGNAL HOLDING. NEXT ATTACK IN 10 SECONDS...','QUEST')end end
+    task.wait(10)
+   end
+  end
+  finishTrial(beacon,true)
+ end)
+end
+
+local function dodge(p)
+ local h=alivePlayer(p)
+ if not h then return end
+ local root=p.Character:FindFirstChild('HumanoidRootPart')
+ if not root then return end
+ local now=clock();local old=dodgeState[p]
+ if old and now<old.nextReady then return end
+ local dir=root.CFrame.LookVector
+ if typeof(dir)~='Vector3' or dir.Magnitude<.1 then return end
+ dodgeState[p]={nextReady=now+3.0,invulnerableUntil=now+.28}
+ local impulse=Vector3.new(dir.X,0,dir.Z)
+ if impulse.Magnitude<.1 then return end
+ root.AssemblyLinearVelocity=impulse.Unit*38+Vector3.new(0,math.max(root.AssemblyLinearVelocity.Y,3),0)
+ Effects:FireAllClients('DODGE',p.UserId,root.Position,impulse.Unit)
+end
+-- The shattered-crown clues are actual guarded world discoveries.
+-- Each player earns a clue by clearing its wardens, not by rapidly clicking a sign.
+local relicGuardians={}
+local function claimRelic(p,altar)
+ local d=profiles[p];if not d or not altar then return end
+ local name=altar.Name
+ local index=tonumber(name:match('RelicAltar(%d+)'))
+ if not index then return end
+ local key='Relic_'..index
+ if d.quests[key] then notice(p,'YOU ALREADY FREED THIS FRAGMENT.','LORE');return end
+ local record=relicGuardians[p] or {};relicGuardians[p]=record
+ local slot=record[index]
+ if not slot then
+  local guards=({{'Goblin','Bandit','Archer'},{'Wizard','Wisp','Wisp'},{'Knight','Knight','Brute'}})[index]
+  if not guards then return end
+  local tag='relic_'..p.UserId..'_'..index
+  slot={tag=tag,start=clock()};record[index]=slot
+  for i,kind in ipairs(guards) do
+   local angle=(i/3)*math.pi*2
+   local pos=altar.Position+Vector3.new(math.cos(angle)*18,0,math.sin(angle)*18)
+   local enemy=spawnEnemy(kind,Vector3.new(pos.X,index==3 and 7.65 or 2.75,pos.Z),tag)
+   if enemy then enemy.home=enemy.pos end
+  end
+  notice(p,'THE RELIC IS GUARDED. DEFEAT ITS WARDENS, THEN CLAIM IT.','WORLD')
+  return
+ end
+ if trialEnemiesRemain(slot.tag)>0 then
+  notice(p,'THE FRAGMENT IS SEALED UNTIL ITS GUARDIANS FALL.','WARN')
+  return
+ end
+ record[index]=nil;d.quests[key]=true;d.relics=d.relics+1;d.coins=d.coins+145
+ local total=0
+ for i=1,3 do if d.quests['Relic_'..i] then total=total+1 end end
+ burst(altar.Position+Vector3.new(0,4,0),Color3.fromRGB(206,122,247),18,.6)
+ notice(p,'CROWN FRAGMENT '..total..'/3 RECOVERED!  +145 GOLD','SUCCESS')
+ if total==3 and not d.owned.Soulrender then
+  d.owned.Soulrender=true
+  giveTool(p,'Soulrender')
+  notice(p,'THE FRAGMENTS REFORMED SOULRENDER. CHECK YOUR INVENTORY!','SUCCESS')
+  eventMessage(p.DisplayName..' REFORGED THE SWORD OF THE HOLLOW KING!')
+ end
  sync(p)
 end
 Action.OnServerEvent:Connect(function(p,action,a,b)
  if type(action)~='string' then return end
  if action=='Fire' then fireWeapon(p,a,b)
+ elseif action=='Dodge' then dodge(p)
  elseif action=='Reload' then reload(p,a)
  elseif action=='Buy' and type(a)=='string' then purchase(p,a)
  elseif action=='Bank' then deposit(p,a)
@@ -774,11 +1035,19 @@ local function attachWorldPrompts()
    local purpose=obj.Name:match('^OV_(%u+)$') or obj:GetAttribute('OutlawAction')
    if purpose then
     obj.Triggered:Connect(function(p)
-     if purpose=='SHOP' then Feedback:FireClient(p,'OPEN_SHOP','')
+     if purpose=='SHOP' then
+      Feedback:FireClient(p,'OPEN_SHOP','')
+      local lines={
+       'Grindle: If that thing explodes in your hands, the warranty explodes with it.',
+       'Grindle: You look alive. That makes you my favorite customer today.',
+       'Grindle: The wizard still owes me sixteen gold and a left eyebrow.',
+       'Grindle: Never trust a knight who refuses to take off his helmet.'}
+      notice(p,lines[random:NextInteger(1,#lines)],'LORE')
      elseif purpose=='BANK' then Feedback:FireClient(p,'OPEN_BANK','')
      elseif purpose=='NURSERY' then hatch(p)
      elseif purpose=='BEACON' then activateBeacon(p,obj.Parent)
      elseif purpose=='LORE' then notice(p,obj.ObjectText or 'There is more to this place than meets the eye.','LORE')
+     elseif purpose=='RELIC' then claimRelic(p,obj.Parent)
      elseif purpose=='SUPPLY' then
       local d=profiles[p];if not d then return end
       d.cacheUsed=d.cacheUsed or {}
@@ -835,12 +1104,40 @@ local function attachPlayer(p)
 end
 Players.PlayerAdded:Connect(attachPlayer)
 for _,p in ipairs(Players:GetPlayers()) do task.spawn(attachPlayer,p)end
-Players.PlayerRemoving:Connect(function(p)save(p);profiles[p]=nil;if pets[p] then pets[p].model:Destroy();pets[p]=nil end end)
+Players.PlayerRemoving:Connect(function(p)relicGuardians[p]=nil;dodgeState[p]=nil;save(p);profiles[p]=nil;if pets[p] then pets[p].model:Destroy();pets[p]=nil end end)
 game:BindToClose(function()
  for p in pairs(profiles) do task.spawn(save,p)end
  task.wait(2)
 end)
+-- Replicated low-cost environmental particles. These use built-in Roblox textures,
+-- not unlicensed third-party asset IDs or unverified external scripts.
+local function dressWorld()
+ local budget=85
+ for _,object in ipairs(world:GetDescendants()) do
+  if budget<=0 then break end
+  if object:IsA('BasePart') then
+   local name=object.Name
+   local isFire=(name=='Lantern flame' or name=='Burning torch' or name=='Hollow flame'
+      or name=='Embers still warm' or name=='Floating crown shard' or name=='Glowing spore')
+   if isFire then
+    budget=budget-1
+    local sparks=Instance.new('ParticleEmitter');sparks.Name='Flickering embers'
+    sparks.Texture='rbxasset://textures/particles/sparkles_main.dds'
+    sparks.Color=ColorSequence.new(object.Color)
+    sparks.LightEmission=.85
+    sparks.Lifetime=NumberRange.new(.3,.9)
+    sparks.Speed=NumberRange.new(.5,2.2)
+    sparks.Rate=name=='Hollow flame' and 12 or 4
+    sparks.SpreadAngle=Vector2.new(65,65)
+    sparks.RotSpeed=NumberRange.new(-20,20)
+    sparks.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.55),NumberSequenceKeypoint.new(1,0)})
+    sparks.Parent=object
+   end
+  end
+ end
+end
 attachWorldPrompts()
+dressWorld()
 for _,spawnData in ipairs(C.Spawns) do spawnEnemy(spawnData.type,spawnData.pos,'natural')end
 -- Enemies actively fight, signal their attacks, retreat, flank, and respawn in dangerous zones.
 local respawnSlots={}
