@@ -1,7 +1,7 @@
 -- OUTLAW VALLEY: THE HOLLOW CROWN
 -- Shared, data-driven balancing. Every value here is editable.
 local C = {}
-C.Version = '0.1.0-first-playable'
+C.Version = '0.2.0-signal-defenses'
 C.PassId = 0 -- The creator must insert their Game Pass ID after publishing.
 C.UseRiggedEnemies = true -- Try Roblox's animated R15 rigs; use static stylized fallback when unavailable.
 C.OwnerUserIds = {} -- Optional explicit owner IDs for group-owned experiences.
@@ -9,7 +9,7 @@ C.StartCoins = 125
 C.StartWeapon = 'Rustfang'
 C.PlayerMaxHealth = 125
 C.PvPLootDropFraction = 0.25
-C.EggSeconds = 480
+C.EggSeconds = 600
 C.DayCycleSeconds = 900
 C.RaidInterval = 240
 C.MapBounds = 530
@@ -24,6 +24,7 @@ C.Weapons = {
  Witchfire={label='WITCHFIRE STAFF',category='projectile',damage=62,range=240,cooldown=.83,mag=8,reserve=56,reload=2.8,price=420,color=Color3.fromRGB(173,91,255),blast=8},
  Rattler={label='SCRAP RATTLER',category='projectile',damage=13,range=240,cooldown=.095,mag=40,reserve=240,reload=2.4,price=520,color=Color3.fromRGB(87,240,160),blast=0},
  Boomstick={label='BOOMSTICK',category='projectile',damage=100,range=260,cooldown=1.3,mag=5,reserve=40,reload=2.7,price=690,color=Color3.fromRGB(255,132,50),blast=19},
+ Soulrender={label='SOULRENDER',category='melee',damage=125,range=12,cooldown=.82,mag=0,reserve=0,reload=0,price=-2,color=Color3.fromRGB(204,115,255),blast=0},
  Godslayer={label='GODSLAYER',category='projectile',damage=100000,range=700,cooldown=1.8,mag=999,reserve=999,reload=.1,price=-1,color=Color3.fromRGB(92,255,120),blast=25},
 }
 C.Enemies = {
