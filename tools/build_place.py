@@ -3,7 +3,7 @@ from pathlib import Path
 from math import cos,sin,pi
 import random, zipfile, json
 random.seed(29071)
-BASE=Path('/mnt/data/outlaw_valley')
+BASE=Path(__file__).resolve().parents[1]
 root=E.Element('roblox',version='4')
 E.SubElement(root,'External').text='null';E.SubElement(root,'External').text='nil'
 serial=0
@@ -25,9 +25,13 @@ def addp(parent,tag,name,val):
  elif tag=='Vector3':
   for key,number in zip('XYZ',val):E.SubElement(x,key).text=f'{float(number):.6f}'
  elif tag=='CoordinateFrame':
-  pos,yaw=val;cy=cos(yaw);sy=sin(yaw)
-  values={'X':pos[0],'Y':pos[1],'Z':pos[2], 'R00':cy,'R01':0,'R02':sy,
-          'R10':0,'R11':1,'R12':0,'R20':-sy,'R21':0,'R22':cy}
+  pos,angle=val
+  yaw,pitch,roll=angle if isinstance(angle,tuple) else (angle,0,0)
+  cy,sy=cos(yaw),sin(yaw);cx,sx=cos(pitch),sin(pitch);cz,sz=cos(roll),sin(roll)
+  values={'X':pos[0],'Y':pos[1],'Z':pos[2],
+   'R00':cy*cz+sy*sx*sz,'R01':-cy*sz+sy*sx*cz,'R02':sy*cx,
+   'R10':cx*sz,'R11':cx*cz,'R12':-sx,
+   'R20':-sy*cz+cy*sx*sz,'R21':sy*sz+cy*sx*cz,'R22':cy*cx}
   for key,num in values.items():E.SubElement(x,key).text=f'{float(num):.8f}'
  elif tag=='bool':x.text='true' if val else 'false'
  else:x.text=str(val)
@@ -139,7 +143,17 @@ def house(x,z,yaw=0,scale=1,kind='house'):
   outside=(w-gap)/2
   part(settlement,'Doorway front wall',(x+side*(gap/2+outside/2),2+h*.5,z-d*.49),(outside,h,1.1),walltone,'Brick',yaw=yaw)
  part(settlement,'Doorway lintel',(x,2+h-1,z-d*.49),(gap,2,1.2),'wood','Wood',yaw=yaw)
- roof=part(settlement,'Dark tiled roof',(x,2+h+3*scale,z),(w+2*scale,5*scale,d+3*scale),'roof','Slate',yaw=yaw)
+ # Two sloping roof faces form an honest gable rather than a concrete roof cube.
+ for side in (-1,1):
+  roll=-side*.4
+  roof=part(settlement,'Steep slate roof face',
+   (x+side*w*.24,2+h+2.25*scale,z),
+   (w*.58,.8*scale,d+3*scale),'roof','Slate',yaw=(yaw,0,roll))
+  # Worn wood shake shingles break up the flat silhouette.
+  for iz in range(-2,3):
+   part(settlement,'Mossed roof batten',(x+side*w*.24,2+h+2.72*scale,z+iz*d*.22),
+    (w*.59,.16, .45),'roof2','Slate',yaw=(yaw,0,roll))
+ part(settlement,'Gable ridge beam',(x,2+h+4.2*scale,z),(.9*scale,1.2*scale,d+3.1*scale),'wood','Wood')
  part(settlement,'Raised eaves',(x,2+h+.7*scale,z),(w+3,1,d+3),'wood','Wood',yaw=yaw)
  # Interior fixtures give an actual reason to enter.
  part(settlement,'Inside oak table',(x+3,4.5,z+2),(6,1.1,4),'wood','WoodPlanks')
@@ -222,8 +236,14 @@ textplate(props,'CROOKED CREEK  /  SAFE TERRITORY',(-155,10,-48),(34,3))
 # Woods - tents, watchtower, bandit camp, breakable-looking detail
 part(wilderness,'Old bandit assembly ground',(80,2.3,102),(104,.5,94),'dirt','Ground')
 for xx,zz in [(28,79),(49,128),(117,65),(131,118)]:
- part(wilderness,'Bandit canvas tent',(xx,6,zz),(17,8,15),'roof','Fabric' if 'Fabric' in material else 'SmoothPlastic')
- part(wilderness,'Tent seam',(xx,11,zz),(18,2,16),'roof2','Slate')
+ for side in (-1,1):
+  part(wilderness,'Sloping bandit tent canvas',(xx+side*4.2,8.2,zz),(10.8,.58,16),'roof2',
+   'SmoothPlastic',yaw=(0,0,-side*.54))
+ for tx in (-1,1):
+  part(wilderness,'Tent ridge pole',(xx+tx*7,7.0,zz),(.6,9,.6),'wood','Wood')
+ part(wilderness,'Rope tie-down',(xx,10.6,zz),(1.0,1.0,18),'wood','Wood')
+ for sx in (-1,1):
+  part(wilderness,'Bedroll',(xx+sx*3.2,3.0,zz+2.8),(3.3,.5,5.5),'marsh','SmoothPlastic')
  lantern(wilderness,xx+8,zz+10,'ember')
 for i in range(25):
  theta=random.random()*2*pi;rr=random.uniform(16,40)
@@ -427,11 +447,62 @@ for j in range(36):
  h=random.uniform(16,64)
  part(land,'Eastern hills ridge',(516,h/2-1,z),(41,h,38),'stone','Rock')
 
+# ---------------------------------------------------------------------------
+# The SIGNAL FIRES: encounters you defend under actual enemy attack.
+# ---------------------------------------------------------------------------
+for index,(x,z) in enumerate(beacons,1):
+ for j in range(9):
+  theta=j*2*pi/9
+  xx=x+15*cos(theta);zz=z+15*sin(theta)
+  part(props,'Signal stones: battle ring',(xx,2.5,zz),(5,.75,5),'stone2','Slate',yaw=theta)
+ for j in range(3):
+  a=j*2*pi/3
+  pillar=part(props,'Weathered guardian of the signal',(x+8*cos(a),7,z+8*sin(a)),(2.5,9,2.5),'stone','Slate')
+  ball(props,'Guardian amber eye',(x+8*cos(a),12,z+8*sin(a)),(1.4,1.4,1.4),'gold','Neon')
+ textplate(props,'DEFEND THE SIGNAL / '+str(index),(x,18,z-18),(27,3),'dark','gold')
+
+# Travelling merchants have abandoned portable camps along real paths.
+for campX,campZ in [(-178,33),(190,45),(-99,315)]:
+ part(props,'Old traveller campfire',(campX,3.2,campZ),(5,1,5),'stone','Rock')
+ ball(props,'Embers still warm',(campX,4,campZ),(3,1,3),'ember','Neon')
+ for j in range(7):
+  angle=j*2*pi/7
+  part(props,'Campfire stone',(campX+3.5*cos(angle),2.8,campZ+3.5*sin(angle)),(2,2,2),'stone2','Rock')
+ for side in (-1,1):
+  part(props,'Traveler camp bench',(campX+side*6,3.6,campZ),(2,1,7),'wood','WoodPlanks')
+
+# Stand-alone clock tower: silhouettes and relief make the village less repetitive.
+tx,tz=-234,-209
+for j in range(13):
+ part(settlement,'Old town clock tower',(tx,3+j*2.1,tz),(11-j*.27,2.2,11-j*.27),'wall','Brick')
+part(settlement,'Copper clock roof',(tx,32,tz),(15,4,15),'roof2','Metal')
+for dx,dz in [(0,-1),(0,1),(-1,0),(1,0)]:
+ face=part(settlement,'Clock face',(tx+dx*5.4,24,tz+dz*5.4),
+  (6,.6,6) if dx else (6,6,.6),'wall2','SmoothPlastic')
+ ball(settlement,'Clock hub',(tx+dx*5.8,24,tz+dz*5.8),(1.1,1.1,1.1),'gold','Metal')
+
+# A real cliffside path to an observatory: dangerous roaming and lore, not a portal.
+for j in range(26):
+ x=94+j*3.0;z=251+j*1.5
+ part(wilderness,'Pilgrim observatory trail',(x,2.7+j*.045,z),(7.4,.4,4),'dirt','Ground')
+for x,z in [(52,281),(65,294),(80,302),(105,315)]:
+ ball(wilderness,'Old pilgrim boulder',(x,3,z),(6,5,7),'stone','Rock',True)
+
+# Three broken relic sanctuaries: combat-based secrets, not clickable loot counter.
+for index,(x,z) in enumerate([(139,239),(-312,331),(250,-172)],1):
+ shrine=part(props,'RelicAltar'+str(index),(x,6,z),(7.5,8,7.5),'stone2','Slate')
+ ball(props,'Floating crown shard',(x,11.3,z),(3,3,3),'purple','Neon')
+ for j in range(6):
+  theta=j*2*pi/6
+  part(props,'Relic sanctuary foundation',(x+9*cos(theta),2.5,z+9*sin(theta)),(4,1,4),'stone','Slate',yaw=theta)
+ prompt(shrine,'RELIC','SEALED CROWN RELIC '+str(index),'Confront Its Guardians',1.2,16)
+ light(shrine,'purple',1.4,22)
+
 # Simple spawn
 spawn=item('SpawnLocation',ws,'Outlaw Valley Player Spawn',[
  ('bool','Anchored',True),('bool','CanCollide',True),('bool','Neutral',True),('bool','Enabled',True),
  ('token','Material',material['Neon']),('Color3uint8','Color3uint8',palette['gold']),
- ('CoordinateFrame','CFrame',((-165,4.0,-150),0)),('Vector3','Size',(7,1,7)),
+ ('CoordinateFrame','CFrame',((-164,4.0,-122),0)),('Vector3','Size',(7,1,7)),
  ('float','Transparency',.72)])
 # Lighting
 lighting=item('Lighting',root,'Lighting',[
@@ -456,12 +527,12 @@ addp(sp.find('Properties'),'float','CharacterJumpPower',48)
 # Camera sound ambient via SoundService not externally sourced, intentionally no unverified audio.
 service=item('SoundService',root,'SoundService')
 # Build, log, package
-out=BASE/'Outlaw_Valley_Hollow_Crown_0_1.rbxlx'
+out=BASE/'Outlaw_Valley_Hollow_Crown_v02.rbxlx'
 E.ElementTree(root).write(str(out),encoding='utf-8',xml_declaration=True,pretty_print=True)
-manifest={"version":"0.1.0-first-playable","place":out.name,"world":{
- "settlements":1,"combat_regions":3,"interactables":10,"scenic_parts":counts.get('Part',0),
- "enemy_types":8,"weapons":7,"bosses":1},"instances":serial,"classes":counts,
- "notes":"Original static hand-built world. No Goblin Hunt assets or scripts reused. Creator Store imports still pending manual vetting."}
+manifest={"version":"0.2.0-signal-defenses","place":out.name,"world":{
+ "settlements":1,"combat_regions":3,"interactables":27,"scenic_parts":counts.get('Part',0),
+ "enemy_types":8,"weapons":8,"bosses":1},"instances":serial,"classes":counts,
+ "notes":"Original assembled world and script-driven character rigs. No Goblin Hunt code used. Creator Store assets not yet embedded or visually verified; real Studio testing pending."}
 (BASE/'BUILD_MANIFEST.json').write_text(json.dumps(manifest,indent=2))
 print(json.dumps(manifest,indent=2))
 print('Place generated',out,'size',out.stat().st_size)
