@@ -140,10 +140,11 @@ local function giveTool(p,id)
   h.Material=Enum.Material.Metal;h.Color=Color3.fromRGB(64,57,49)
   h.CanCollide=false;h.Massless=true;h.Parent=t
   local weapon=C.Weapons[id]
-  local function piece(name,size,offset,color,shape,rotation)
-   local x=Instance.new('Part');x.Name=name;x.Size=size;x.Color=color;x.Material=Enum.Material.Metal
+  local function piece(name,size,offset,color,shape,rotation,material)
+   local x=Instance.new('Part');x.Name=name;x.Size=size;x.Color=color;x.Material=material or Enum.Material.Metal
    x.CanCollide=false;x.Massless=true;x.Shape=shape or Enum.PartType.Block;x.CFrame=h.CFrame*CFrame.new(offset)*(rotation or CFrame.new())
    x.Parent=t;local weld=Instance.new('WeldConstraint');weld.Part0=h;weld.Part1=x;weld.Parent=x
+   return x
   end
   if id=='Rustfang' then
    piece('Crossguard',Vector3.new(1.7,.14,.19),Vector3.new(0,.78,0),Color3.fromRGB(194,150,69))
@@ -182,15 +183,25 @@ local function giveTool(p,id)
      piece('Grenade Chamber',Vector3.new(.42,.42,.42),Vector3.new((step-2.5)*.33,1.65,-1.4),Color3.fromRGB(245,149,68),Enum.PartType.Ball)
     end
    elseif heavy then
-    piece('Godslayer Reactor',Vector3.new(2.25,2.25,2.25),Vector3.new(0,1.25,-1.6),weapon.color,Enum.PartType.Ball)
-    piece('Gilded Crest',Vector3.new(2.6,.28,2.1),Vector3.new(0,1.35,-2.85),Color3.fromRGB(233,174,56))
-    for i=1,4 do
-     local offset=-.3-i*.9
-     piece('Concentric reactor coil '..i,Vector3.new(.23,2.0,2.0),Vector3.new(0,.7,offset),Color3.fromRGB(242,186,72),Enum.PartType.Cylinder,CFrame.Angles(0,math.pi/2,0))
+    -- Godslayer is an ornate blacksteel-and-malachite siege relic, not a colored line gun.
+    local core=piece('GODSLAYER / Heart of the Hollow Crown',Vector3.new(2.4,2.4,2.4),Vector3.new(0,1.28,-1.6),weapon.color,Enum.PartType.Ball,nil,Enum.Material.Neon)
+    local light=Instance.new('PointLight');light.Name='Reactor illumination';light.Color=weapon.color
+    light.Brightness=3;light.Range=16;light.Parent=core
+    piece('Goldwork Royal Crest',Vector3.new(2.8,.28,2.4),Vector3.new(0,1.48,-2.78),Color3.fromRGB(241,184,65))
+    piece('Blacksteel Buttstock',Vector3.new(1.25,.76,1.7),Vector3.new(0,-.21,1.2),Color3.fromRGB(31,36,36))
+    piece('Foregrip Bracing',Vector3.new(.56,1.25,.6),Vector3.new(0,-.45,-2.9),Color3.fromRGB(91,74,47))
+    for i=1,5 do
+     local offset=.10-i*.89
+     piece('Concentric auric reactor coil '..i,Vector3.new(.23,2.0,2.0),Vector3.new(0,.7,offset),Color3.fromRGB(242,186,72),Enum.PartType.Cylinder,CFrame.Angles(0,math.pi/2,0))
+     piece('Corrupted crown rune '..i,Vector3.new(1.4,.2,.26),Vector3.new(0,1.76,offset),Color3.fromRGB(117,255,168),nil,nil,Enum.Material.Neon)
     end
     for side=-1,1,2 do
-     piece('Arcane energy vane',Vector3.new(.3,1.2,4.3),Vector3.new(side*1.0,1.2,-2.1),Color3.fromRGB(82,227,151))
+     piece('Arcane spectral vane',Vector3.new(.26,1.35,4.5),Vector3.new(side*1.12,1.18,-2.0),Color3.fromRGB(75,224,154),nil,nil,Enum.Material.Neon)
+     piece('Golden receiver wing',Vector3.new(.24,.45,3.6),Vector3.new(side*1.3,.36,-1.9),Color3.fromRGB(196,142,53))
+     piece('Siege-prong darksteel',Vector3.new(.45,.55,1.6),Vector3.new(side*.83,1.05,-4.4),Color3.fromRGB(31,35,40))
+     piece('Muzzle star crystal',Vector3.new(.75,.75,.75),Vector3.new(side*.8,1.1,-5.18),Color3.fromRGB(126,255,172),Enum.PartType.Ball,nil,Enum.Material.Neon)
     end
+    piece('Circular warning sigil',Vector3.new(.25,2.1,2.1),Vector3.new(0,.7,-5.0),Color3.fromRGB(250,206,91),Enum.PartType.Cylinder,CFrame.Angles(0,math.pi/2,0))
    end
   end
   return t
