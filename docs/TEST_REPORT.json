@@ -1,11 +1,24 @@
 {
   "summary": {
-    "passed": 28,
+    "passed": 40,
     "failed": 0,
     "roblox_studio_runtime": "NOT EXECUTED",
-    "creator_store_meshes_imported": 0
+    "creator_store_meshes_embedded_offline": 0,
+    "creator_store_models_curated_for_in_game_loading": 11
   },
   "checks": [
+    {
+      "name": "syntax: OutlawAssetCatalog.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawAssetInstaller.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawAssetRuntime.lua",
+      "pass": true
+    },
     {
       "name": "syntax: OutlawClient.lua",
       "pass": true
@@ -75,6 +88,30 @@
       "pass": true
     },
     {
+      "name": "script embedded: OutlawAssetCatalog",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawAssetCatalog",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawAssetInstaller",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawAssetInstaller",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawAssetRuntime",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawAssetRuntime",
+      "pass": true
+    },
+    {
       "name": "region exists: CROOKED CREEK  |  SETTLEMENT",
       "pass": true
     },
@@ -116,6 +153,18 @@
     },
     {
       "name": "distinct props",
+      "pass": true
+    },
+    {
+      "name": "Creator Store model references",
+      "pass": true
+    },
+    {
+      "name": "automatic asset loader wired",
+      "pass": true
+    },
+    {
+      "name": "imported model scripts stripped",
       "pass": true
     }
   ]
