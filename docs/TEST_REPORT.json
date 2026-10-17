@@ -1,0 +1,122 @@
+{
+  "summary": {
+    "passed": 28,
+    "failed": 0,
+    "roblox_studio_runtime": "NOT EXECUTED",
+    "creator_store_meshes_imported": 0
+  },
+  "checks": [
+    {
+      "name": "syntax: OutlawClient.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawConfig.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawRigFactory.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawRules.lua",
+      "pass": true
+    },
+    {
+      "name": "syntax: OutlawServer.lua",
+      "pass": true
+    },
+    {
+      "name": "executed Lua rules: 15 assertions",
+      "pass": true
+    },
+    {
+      "name": "place xml root",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawConfig",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawConfig",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawRules",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawRules",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawRigFactory",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawRigFactory",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawClient",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawClient",
+      "pass": true
+    },
+    {
+      "name": "script embedded: OutlawServer",
+      "pass": true
+    },
+    {
+      "name": "embedded source exact: OutlawServer",
+      "pass": true
+    },
+    {
+      "name": "region exists: CROOKED CREEK  |  SETTLEMENT",
+      "pass": true
+    },
+    {
+      "name": "region exists: THIEVES WOODS  |  CAMPS & RUINS",
+      "pass": true
+    },
+    {
+      "name": "region exists: WITCHWATER  |  CURSED MARSH",
+      "pass": true
+    },
+    {
+      "name": "region exists: BROKEN CROWN  |  FORTRESS",
+      "pass": true
+    },
+    {
+      "name": "prompt exists: OV_SHOP",
+      "pass": true
+    },
+    {
+      "name": "prompt exists: OV_BANK",
+      "pass": true
+    },
+    {
+      "name": "prompt exists: OV_NURSERY",
+      "pass": true
+    },
+    {
+      "name": "prompt exists: OV_GODSLAYER",
+      "pass": true
+    },
+    {
+      "name": "beacons",
+      "pass": true
+    },
+    {
+      "name": "supply caches",
+      "pass": true
+    },
+    {
+      "name": "distinct props",
+      "pass": true
+    }
+  ]
+}
