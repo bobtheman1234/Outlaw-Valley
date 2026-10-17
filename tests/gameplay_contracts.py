@@ -4,7 +4,7 @@ from lxml import etree as E
 import re, json, sys
 BASE=Path(__file__).resolve().parents[1]
 LUA={p.stem:p.read_text() for p in (BASE/'src').glob('*.lua')}
-r=E.parse(str(BASE/'Outlaw_Valley_Hollow_Crown_v03.rbxlx')).getroot()
+r=E.parse(str(BASE/'Outlaw_Valley_Hollow_Crown_v04_ArtUpgrade.rbxlx')).getroot()
 CHECK=[]
 def check(title,result):
  CHECK.append((title,bool(result)))
@@ -54,6 +54,7 @@ check('data persistence attempted and guarded',all(x in server for x in ('DSS:Ge
 check('built-in texture particle effect',"sparkles_main.dds" in server and 'local function dressWorld()' in server)
 check('real grenade travel not hitscan',all(x in server for x in ('launchGrenade(p,barrel,dir,weapon)','local fuse=2.9','velocity=direction.Unit*115','world:Raycast(pos,step,ray)')))
 check('camera recoil distinguishes guns', "id=='Godslayer' and 2.8" in client and "id=='Rattler' and .3" in client)
+check('store integration present', all(x in (BASE/'src/OutlawAssetInstaller.lua').read_text() for x in ('AssetService:LoadAssetAsync',"child:IsA('LuaSourceContainer')",'model:ScaleTo','CreatorStoreAssetId')))
 check('source tool screenshots honest','NOT EXECUTED' in (BASE/'TEST_REPORT.json').read_text())
 report={'kind':'offline structural contracts, NOT Roblox engine tests','passed':sum(x[1] for x in CHECK),'failed':sum(not x[1] for x in CHECK),'checks':[{'name':x,'pass':p} for x,p in CHECK]}
 (BASE/'GAMEPLAY_CONTRACT_REPORT.json').write_text(json.dumps(report,indent=2))
