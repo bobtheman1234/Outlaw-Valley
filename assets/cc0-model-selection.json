@@ -1,0 +1,727 @@
+{
+  "name": "Outlaw Valley CC0 fantasy model selection",
+  "source_repo": "Hidencod/tge-assets",
+  "license": "CC0-1.0",
+  "files": [
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Bridge draw",
+      "path": "packs/castle-kit/bridge-draw.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/bridge-draw.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Bridge straight",
+      "path": "packs/castle-kit/bridge-straight.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/bridge-straight.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Gate",
+      "path": "packs/castle-kit/gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Door",
+      "path": "packs/castle-kit/door.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/door.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Metal gate",
+      "path": "packs/castle-kit/metal-gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/metal-gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower base",
+      "path": "packs/castle-kit/tower-base.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-base.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square base",
+      "path": "packs/castle-kit/tower-square-base.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-base.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square mid door",
+      "path": "packs/castle-kit/tower-square-mid-door.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-mid-door.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square mid windows",
+      "path": "packs/castle-kit/tower-square-mid-windows.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-mid-windows.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square roof",
+      "path": "packs/castle-kit/tower-square-roof.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-roof.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square top roof high",
+      "path": "packs/castle-kit/tower-square-top-roof-high.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-top-roof-high.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square arch",
+      "path": "packs/castle-kit/tower-square-arch.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square-arch.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower square",
+      "path": "packs/castle-kit/tower-square.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-square.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower hexagon base",
+      "path": "packs/castle-kit/tower-hexagon-base.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-hexagon-base.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Tower hexagon roof",
+      "path": "packs/castle-kit/tower-hexagon-roof.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/tower-hexagon-roof.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Wall corner",
+      "path": "packs/castle-kit/wall-corner.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/wall-corner.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Wall doorway",
+      "path": "packs/castle-kit/wall-doorway.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/wall-doorway.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Wall half",
+      "path": "packs/castle-kit/wall-half.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/wall-half.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Wall pillar",
+      "path": "packs/castle-kit/wall-pillar.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/wall-pillar.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Wall narrow gate",
+      "path": "packs/castle-kit/wall-narrow-gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/wall-narrow-gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Flag banner long",
+      "path": "packs/castle-kit/flag-banner-long.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/flag-banner-long.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "castle-kit",
+      "name": "Flag banner short",
+      "path": "packs/castle-kit/flag-banner-short.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/flag-banner-short.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "pirate-kit",
+      "name": "Castle door",
+      "path": "packs/pirate-kit/castle-door.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/castle-door.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "pirate-kit",
+      "name": "Castle gate",
+      "path": "packs/pirate-kit/castle-gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/castle-gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "pirate-kit",
+      "name": "Structure roof",
+      "path": "packs/pirate-kit/structure-roof.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/structure-roof.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "pirate-kit",
+      "name": "Structure",
+      "path": "packs/pirate-kit/structure.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/structure.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Buildings",
+      "pack": "pirate-kit",
+      "name": "Tower watch",
+      "path": "packs/pirate-kit/tower-watch.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/tower-watch.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree detailed",
+      "path": "packs/nature-kit/tree-detailed.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-detailed.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree oak",
+      "path": "packs/nature-kit/tree-oak.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-oak.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree default",
+      "path": "packs/nature-kit/tree-default.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-default.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree pinedefaulta",
+      "path": "packs/nature-kit/tree-pinedefaulta.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-pinedefaulta.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree pinerounda",
+      "path": "packs/nature-kit/tree-pinerounda.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-pinerounda.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree pinesmalla",
+      "path": "packs/nature-kit/tree-pinesmalla.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-pinesmalla.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Tree pinetalla detailed",
+      "path": "packs/nature-kit/tree-pinetalla-detailed.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/tree-pinetalla-detailed.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Rock smalla",
+      "path": "packs/nature-kit/rock-smalla.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/rock-smalla.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Rock talla",
+      "path": "packs/nature-kit/rock-talla.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/rock-talla.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Stump rounddetailed",
+      "path": "packs/nature-kit/stump-rounddetailed.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/stump-rounddetailed.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Cliff cave rock",
+      "path": "packs/nature-kit/cliff-cave-rock.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/cliff-cave-rock.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Cliff large rock",
+      "path": "packs/nature-kit/cliff-large-rock.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/cliff-large-rock.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Mushroom red",
+      "path": "packs/nature-kit/mushroom-red.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/mushroom-red.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Grass large",
+      "path": "packs/nature-kit/grass-large.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/grass-large.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "nature-kit",
+      "name": "Bridge stone",
+      "path": "packs/nature-kit/bridge-stone.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/nature-kit/bridge-stone.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "graveyard-kit",
+      "name": "Pine crooked",
+      "path": "packs/graveyard-kit/pine-crooked.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/pine-crooked.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Nature",
+      "pack": "graveyard-kit",
+      "name": "Trunk long",
+      "path": "packs/graveyard-kit/trunk-long.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/trunk-long.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "graveyard-kit",
+      "name": "Character ghost",
+      "path": "packs/graveyard-kit/character-ghost.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/character-ghost.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "graveyard-kit",
+      "name": "Character keeper",
+      "path": "packs/graveyard-kit/character-keeper.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/character-keeper.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "graveyard-kit",
+      "name": "Character skeleton",
+      "path": "packs/graveyard-kit/character-skeleton.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/character-skeleton.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "graveyard-kit",
+      "name": "Character vampire",
+      "path": "packs/graveyard-kit/character-vampire.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/character-vampire.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "graveyard-kit",
+      "name": "Character zombie",
+      "path": "packs/graveyard-kit/character-zombie.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/character-zombie.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "mini-dungeon",
+      "name": "Character orc",
+      "path": "packs/mini-dungeon/character-orc.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/character-orc.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Characters",
+      "pack": "mini-dungeon",
+      "name": "Character human",
+      "path": "packs/mini-dungeon/character-human.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/character-human.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "mini-dungeon",
+      "name": "Weapon spear",
+      "path": "packs/mini-dungeon/weapon-spear.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/weapon-spear.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "mini-dungeon",
+      "name": "Weapon sword",
+      "path": "packs/mini-dungeon/weapon-sword.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/weapon-sword.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "mini-dungeon",
+      "name": "Shield round",
+      "path": "packs/mini-dungeon/shield-round.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/shield-round.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "mini-dungeon",
+      "name": "Shield rectangle",
+      "path": "packs/mini-dungeon/shield-rectangle.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/shield-rectangle.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "castle-kit",
+      "name": "Siege ballista",
+      "path": "packs/castle-kit/siege-ballista.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/siege-ballista.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "castle-kit",
+      "name": "Siege trebuchet",
+      "path": "packs/castle-kit/siege-trebuchet.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/castle-kit/siege-trebuchet.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Weapons",
+      "pack": "pirate-kit",
+      "name": "Cannon",
+      "path": "packs/pirate-kit/cannon.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/cannon.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Banner",
+      "path": "packs/mini-dungeon/banner.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/banner.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Barrel",
+      "path": "packs/mini-dungeon/barrel.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/barrel.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Chair",
+      "path": "packs/mini-dungeon/chair.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/chair.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Chest",
+      "path": "packs/mini-dungeon/chest.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/chest.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Coin",
+      "path": "packs/mini-dungeon/coin.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/coin.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Column",
+      "path": "packs/mini-dungeon/column.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/column.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Gate",
+      "path": "packs/mini-dungeon/gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Key",
+      "path": "packs/mini-dungeon/key.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/key.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Pot",
+      "path": "packs/mini-dungeon/pot.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/pot.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Potion",
+      "path": "packs/mini-dungeon/potion.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/potion.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Stones",
+      "path": "packs/mini-dungeon/stones.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/stones.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Table",
+      "path": "packs/mini-dungeon/table.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/table.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Trap",
+      "path": "packs/mini-dungeon/trap.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/trap.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "mini-dungeon",
+      "name": "Wood support",
+      "path": "packs/mini-dungeon/wood-support.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/mini-dungeon/wood-support.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Altar stone",
+      "path": "packs/graveyard-kit/altar-stone.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/altar-stone.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Bench",
+      "path": "packs/graveyard-kit/bench.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/bench.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Candle multiple",
+      "path": "packs/graveyard-kit/candle-multiple.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/candle-multiple.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Coffin",
+      "path": "packs/graveyard-kit/coffin.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/coffin.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Crypt large",
+      "path": "packs/graveyard-kit/crypt-large.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/crypt-large.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Fence gate",
+      "path": "packs/graveyard-kit/fence-gate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/fence-gate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Fire basket",
+      "path": "packs/graveyard-kit/fire-basket.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/fire-basket.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Lantern glass",
+      "path": "packs/graveyard-kit/lantern-glass.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/lantern-glass.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Lightpost single",
+      "path": "packs/graveyard-kit/lightpost-single.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/lightpost-single.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Gravestone broken",
+      "path": "packs/graveyard-kit/gravestone-broken.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/gravestone-broken.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Urn square",
+      "path": "packs/graveyard-kit/urn-square.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/urn-square.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "graveyard-kit",
+      "name": "Debris wood",
+      "path": "packs/graveyard-kit/debris-wood.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/graveyard-kit/debris-wood.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Bottle",
+      "path": "packs/pirate-kit/bottle.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/bottle.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Crate",
+      "path": "packs/pirate-kit/crate.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/crate.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Flag pennant",
+      "path": "packs/pirate-kit/flag-pennant.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/flag-pennant.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Platform planks",
+      "path": "packs/pirate-kit/platform-planks.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/platform-planks.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Ship wreck",
+      "path": "packs/pirate-kit/ship-wreck.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/ship-wreck.glb",
+      "license": "CC0-1.0"
+    },
+    {
+      "category": "Props",
+      "pack": "pirate-kit",
+      "name": "Structure fence",
+      "path": "packs/pirate-kit/structure-fence.glb",
+      "source": "https://github.com/Hidencod/tge-assets/blob/main/packs/pirate-kit/structure-fence.glb",
+      "license": "CC0-1.0"
+    }
+  ]
+}
